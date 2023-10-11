@@ -4,18 +4,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity(name="test_table")
+@Entity
 @NoArgsConstructor
+@Table(name = "test_table")
 public class TestVo {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer test_id;
-	private String 	test_name;
-	private String 	test_content;
+	private Integer testid;
+	private String 	testname;
+	private String 	testcontent;
 	
 }
