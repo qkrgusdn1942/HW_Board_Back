@@ -1,5 +1,7 @@
 package com.hw.test;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +11,8 @@ public class TestService {
 	@Autowired
 	private TestRepository testRepository;
 	
-	public TestVo findByTestId(Integer id) {
-		TestVo vo = testRepository.findByTestid(id);
+	public List<TestVo> findById(Integer id) {
+		List<TestVo> vo = testRepository.findAll();
 		return vo;
 	}
 }
