@@ -1,0 +1,3 @@
+ALTER TABLE study.test_table MODIFY COLUMN id int(11) auto_increment NOT NULL;
+
+ALTER TABLE test_table convert to charset utf8;

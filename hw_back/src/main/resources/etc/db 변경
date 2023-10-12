@@ -1,3 +1,0 @@
-alter table test_table change test_id testId int;
-alter table test_table change test_name testName varchar(200);
-alter table test_table change test_content testContent varchar(200);

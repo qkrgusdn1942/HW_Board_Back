@@ -11,8 +11,12 @@ public class TestService {
 	@Autowired
 	private TestRepository testRepository;
 	
-	public List<TestVo> findById(Integer id) {
+	public List<TestVo> testFindAll() {
 		List<TestVo> vo = testRepository.findAll();
 		return vo;
+	}
+	
+	public void saveTest(TestVo vo) {
+		testRepository.save(vo);
 	}
 }
