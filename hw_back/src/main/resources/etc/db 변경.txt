@@ -1,3 +1,14 @@
+
 ALTER TABLE study.test_table MODIFY COLUMN id int(11) auto_increment NOT NULL;
 
 ALTER TABLE test_table convert to charset utf8;
+
+// 게시판 테이블 생성
+CREATE TABLE board(
+	board_id bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	writer VARCHAR(30) NOT NULL,
+	content VARCHAR(1024),
+	is_delete int,
+	insert_date datetime,
+	update_date datetime
+)DEFAULT CHARSET=utf8;
