@@ -23,7 +23,7 @@ public class BoardController {
 	
 	@GetMapping(value = "/findBoardAll")
 	public List<BoardEntity> getBoardAll () {
-		return boardService.findBoardAll();
+		return boardService.findBoardAllByOrderByUpdateDateDesc();
 	}
 	
 	@PostMapping(value = "/saveBoard")
@@ -31,7 +31,7 @@ public class BoardController {
 		boardService.saveBoard(boardEntity);
 	}
 	
-	@PutMapping(value = "modifyBoardByBoardId")
+	@PutMapping(value = "/modifyBoardByBoardId")
 	public void modifyBoardByBoardId (BoardEntity boardEntity) {
 		boardService.modifyBoardByBoardId(boardEntity);
 	}

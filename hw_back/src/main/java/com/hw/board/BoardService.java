@@ -19,7 +19,7 @@ public class BoardService {
 		return boardRepository.findByBoardId(boardEntity.getBoardId());
 	}
 	
-	public List<BoardEntity> findBoardAll () {
+	public List<BoardEntity> findBoardAllByOrderByUpdateDateDesc () {
 		return boardRepository.findAll();
 	}
 	
