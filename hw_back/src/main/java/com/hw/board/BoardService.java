@@ -15,8 +15,8 @@ public class BoardService {
 	@Autowired
 	BoardEntityRepository boardRepository;
 	
-	public BoardEntity findByBoardId (BoardEntity boardEntity) {
-		return boardRepository.findByBoardId(boardEntity.getBoardId());
+	public BoardEntity findByBoardId (Long boardId) {
+		return boardRepository.findByBoardId(boardId);
 	}
 	
 	public List<BoardEntity> findBoardAllByOrderByUpdateDateDesc () {
@@ -29,13 +29,13 @@ public class BoardService {
 	
 	@Transactional
 	public void modifyBoardByBoardId (BoardEntity boardEntity) {
-		BoardEntity entity = findByBoardId(boardEntity);
+		BoardEntity entity = findByBoardId(boardEntity.getBoardId());
 		NullProperty.copyProperty(boardEntity, entity);
 	}
 	
 	@Transactional
 	public void deleteBoardByBoardId (BoardEntity boardEntity) {
-		BoardEntity entity = findByBoardId(boardEntity);
+		BoardEntity entity = findByBoardId(boardEntity.getBoardId());
 		NullProperty.copyProperty(boardEntity, entity);
 		entity.setIsDelete(1);
 	}

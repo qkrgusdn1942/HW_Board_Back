@@ -18,8 +18,9 @@ public class BoardController {
 	private BoardService boardService;
 	
 	@GetMapping(value = "/findBoardByBoardId")
-	public BoardEntity getBoardByBoardId (BoardEntity boardEntity) {
-		return boardService.findByBoardId(boardEntity);
+	public BoardEntity getBoardByBoardId (Long boardId) {
+		System.out.println(boardId);
+		return boardService.findByBoardId(boardId);
 	}
 	
 	@GetMapping(value = "/findBoardAll")
