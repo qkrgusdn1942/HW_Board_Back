@@ -25,7 +25,7 @@ public class BoardController {
 	
 	@GetMapping(value = "/findBoardAll")
 	public List<BoardEntity> getBoardAll () {
-		return boardService.findBoardAllByOrderByUpdateDateDesc();
+		return boardService.findBoardAll();
 	}
 	
 	@PostMapping(value = "/saveBoard")
@@ -34,7 +34,7 @@ public class BoardController {
 	}
 	
 	@PutMapping(value = "/modifyBoardByBoardId")
-	public void modifyBoardByBoardId (BoardEntity boardEntity) {
+	public void modifyBoardByBoardId (@RequestBody BoardEntity boardEntity) {
 		boardService.modifyBoardByBoardId(boardEntity);
 	}
 	

@@ -3,6 +3,7 @@ package com.hw.board;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.hw.common.NullProperty;
@@ -19,8 +20,9 @@ public class BoardService {
 		return boardRepository.findByBoardId(boardId);
 	}
 	
-	public List<BoardEntity> findBoardAllByOrderByUpdateDateDesc () {
-		return boardRepository.findAll();
+	public List<BoardEntity> findBoardAll () {
+		Sort sort = Sort.by(Sort.Direction.DESC, "updateDate");
+		return boardRepository.findAll(sort);
 	}
 	
 	public BoardEntity saveBoard (BoardEntity boardEntity) {
