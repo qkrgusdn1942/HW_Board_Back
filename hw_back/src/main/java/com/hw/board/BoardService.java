@@ -35,10 +35,7 @@ public class BoardService {
 		NullProperty.copyProperty(boardEntity, entity);
 	}
 	
-	@Transactional
-	public void deleteBoardByBoardId (BoardEntity boardEntity) {
-		BoardEntity entity = findByBoardId(boardEntity.getBoardId());
-		NullProperty.copyProperty(boardEntity, entity);
-		entity.setIsDelete(1);
+	public void deleteBoardByBoardId (Long boardId) {
+		boardRepository.deleteById(boardId);
 	}
 }
