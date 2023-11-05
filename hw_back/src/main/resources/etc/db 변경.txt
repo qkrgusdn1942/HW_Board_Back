@@ -17,7 +17,7 @@ CREATE TABLE board(
 ALTER TABLE study.board MODIFY COLUMN board_id bigint(20) auto_increment NOT NULL;
 
 //
-CREATE TABLE usre(
+CREATE TABLE user(
 	user_id bigint NOT NULL AUTO_INCREMENT PRIMARY KEY,
 	login_id varchar(16),
 	password varchar(256),
