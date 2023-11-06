@@ -24,3 +24,10 @@ CREATE TABLE user(
 	insert_date datetime,
 	update_date datetime
 )DEFAULT CHARSET=utf8;
+
+
+//
+alter table user add column role varchar(16);
+alter table user add column user_name varchar(16);
+
+//
