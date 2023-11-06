@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BaseDto {
+public class BaseResponse {
 
 	private boolean success; // 요청 성공 여부
 	private String message; // 응답 메세지

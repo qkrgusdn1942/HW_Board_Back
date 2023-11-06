@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class DataDto<T> extends BaseDto{
+public class DataResponse<T> extends BaseResponse{
 
 	private T data; // 단일 데이터 전달
 	private List<T> dataList; // 다중 데이터 전달 
