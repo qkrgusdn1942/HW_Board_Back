@@ -50,7 +50,7 @@ public class TokenProvide implements InitializingBean {
         this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
 	}
 	
-	 @Override
+	@Override
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
@@ -107,7 +107,6 @@ public class TokenProvide implements InitializingBean {
      */
 	 public Authentication getAuthentication(String token) {
 		 UserDetails userDetails = userDetailsService.loadUserByUsername(token);
-		 
 		 return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
 	 }
 	 

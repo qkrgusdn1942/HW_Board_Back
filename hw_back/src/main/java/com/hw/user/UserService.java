@@ -2,13 +2,15 @@ package com.hw.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hw.common.TokenDto;
 import com.hw.common.TokenProvide;
+import com.hw.dto.UserDto;
 import com.hw.exception.DuplicatedUsernameException;
+import com.hw.exception.LoginFailException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,9 +22,7 @@ public class UserService {
 	// 암호화 위한 엔코더
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
-	@Autowired
-	UserRepository userRepository;
-
+	private final UserRepository userRepository;
 	private final TokenProvide tokenProvide;
 	
 	 /**
@@ -30,18 +30,35 @@ public class UserService {
      * @param userEntity
      * @return boolean
      */
-	public boolean join (UserEntity userEntity) {
+	@Transactional
+	public boolean join (UserDto userDto) {
 		// 기존 회원 체크
-		if(userRepository.findByLoginId(userEntity.getLoginId()).isPresent()) {
+		userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		userDto.setRole("ROLE_USER");
+		
+		if(userRepository.findByLoginId(userDto.getLoginId()).isPresent()) {
 			log.info("이미 가입된 회원");
 			throw new DuplicatedUsernameException("이미 가입된 회원입니다.");
 		} 
 		
-		userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
-		userEntity.setRole("ROLE_USER");
+		UserEntity userEntity = UserEntity.toUserEntity(userDto);
 		userRepository.save(userEntity);
-		
 		return true;
+	}
+	
+	 /**
+     * 로그인
+     * @param userEntity
+     * @return String
+     */
+	public String login (UserDto userDto) {
+		
+		UserEntity userEntity = userRepository.findByLoginId(userDto.getLoginId()).orElseThrow(() -> new LoginFailException("회원 정보가 없습니다."));
+
+		if (!passwordEncoder.matches(userDto.getPassword(), userEntity.getPassword())) {
+			throw new LoginFailException("비밀번호가 불일치");
+		}
+		return userDto.getLoginId();
 	}
 
 	/**
