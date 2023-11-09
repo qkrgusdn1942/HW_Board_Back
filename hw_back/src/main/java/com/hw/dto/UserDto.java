@@ -20,7 +20,7 @@ public class UserDto extends BaseDto {
 	private Long userId;
 	private String password;
 	private String loginId;
-	private String userName;
+	private String name;
 	private String role;
 	private Timestamp insertDate;
 	private Timestamp updateDate;
@@ -30,7 +30,7 @@ public class UserDto extends BaseDto {
 				.userId(userEntity.getUserId())
 				.loginId(userEntity.getLoginId())
 				.password(userEntity.getPassword())
-				.userName(userEntity.getUserName())
+				.name(userEntity.getName())
 				.role(userEntity.getRole())
 				.insertDate(userEntity.getInsertDate())
 				.updateDate(userEntity.getUpdateDate())

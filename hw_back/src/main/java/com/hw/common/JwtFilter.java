@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class JwtFilter extends GenericFilterBean {
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 	
 	private TokenProvide tokenProvide;
 	
@@ -42,13 +42,11 @@ public class JwtFilter extends GenericFilterBean {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		System.out.println("---------- DO FILTER 실행 -------------");
-		
 		HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestURI = httpServletRequest.getRequestURI();
         
-        if(requestURI.contains("/main,/user/*")) {
+        if(requestURI.equals("/main") || requestURI.equals("/user/login") || requestURI.equals("/user/join")) {
         	chain.doFilter(request, response);
             return;
         }
@@ -68,10 +66,11 @@ public class JwtFilter extends GenericFilterBean {
         	try {
         		if (StringUtils.hasText(useToken) && tokenProvide.validateToken(useToken)) {
         			Authentication authentication = tokenProvide.getAuthentication(useToken);
+        			SecurityContextHolder.getContext().setAuthentication(authentication);
         			return;
         		}
         	} catch (Exception e) {
-        		log.error(e.getMessage(), e);
+        		logger.error(e.getMessage(), e);
         	}
         } else {
         	useToken = tokenProvide.resolveToken(httpServletRequest.getHeader("Authorization"));
@@ -82,9 +81,9 @@ public class JwtFilter extends GenericFilterBean {
         	if (StringUtils.hasText(useToken) && tokenProvide.validateToken(useToken)) {
         		Authentication authentication = tokenProvide.getAuthentication(useToken);
         		SecurityContextHolder.getContext().setAuthentication(authentication);
-        		log.debug("Security Contextx에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+        		logger.debug("Security Contextx에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
         	} else {
-        		log.debug("JWT 유효한 토큰 없음 , uri:{}", requestURI);
+        		logger.debug("JWT 유효한 토큰 없음 , uri:{}", requestURI);
         	}
         	chain.doFilter(request, response);
         	// 잘못된 서명인 토큰일 경우

@@ -17,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-	private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 	
 	// 암호화 위한 엔코더
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -37,7 +37,6 @@ public class UserService {
 		userDto.setRole("ROLE_USER");
 		
 		if(userRepository.findByLoginId(userDto.getLoginId()).isPresent()) {
-			log.info("이미 가입된 회원");
 			throw new DuplicatedUsernameException("이미 가입된 회원입니다.");
 		} 
 		

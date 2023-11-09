@@ -23,7 +23,7 @@ import com.hw.dto.UserDto;
 @RequestMapping(value="/user/*")
 public class LoginCtrl {
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass().getSimpleName());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
 	
 	@Autowired
 	UserService userService;
@@ -41,10 +41,7 @@ public class LoginCtrl {
 		
 		try {
 			
-			log.info("------------- 회원가입 -------------");
-			log.info("loginId :: " + userDto.getLoginId());
-			log.info("password :: " + userDto.getPassword());
-			log.info("username :: " + userDto.getUserName());
+			logger.info("------------- 회원가입 -------------");
 			
 			// 회원가입 
 			userService.join(userDto);
@@ -53,7 +50,7 @@ public class LoginCtrl {
 			BaseResponse response = responseService.getBaseResponse(false, e.getMessage());
             responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
-		log.info("------------- 회원가입 -------------");
+		logger.info("------------- 회원가입 -------------");
 		return responseEntity;
 	}
 
@@ -68,17 +65,12 @@ public class LoginCtrl {
 		
 		try {
 			
-			log.info("------------- 로그인 -------------");
-			log.info("loginId :: " + userDto.getLoginId());
-			log.info("password :: " + userDto.getPassword());
-			log.info("username :: " + userDto.getUserName());
+			logger.info("------------- 로그인 -------------");
 			
 			String loginId =  userService.login(userDto);
 			
 			// 토큰 생성 
-			log.info("토큰생성 !");
 			TokenDto tokenDto = userService.generateToken(loginId);
-			log.info("토큰 :: " + tokenDto);
 			
 			// 쿠키 
 			ResponseCookie responseCookie = 
@@ -87,7 +79,6 @@ public class LoginCtrl {
 						.path("/")
 						.maxAge(14 * 24 * 60 * 60)
 						.build();
-			log.info(responseCookie.toString());
 			
 			// 응답 객체 
 			DataResponse<String> response = responseService.getSingleDataResponse(true, loginId, tokenDto.getAccessToken());
@@ -99,11 +90,11 @@ public class LoginCtrl {
 						.body(response);
 						
 		}catch (Exception e) {
-			log.info("! 오류  :: " + e.getMessage());
+			logger.info("! 오류  :: " + e.getMessage());
 			BaseResponse response = responseService.getBaseResponse(false, e.getMessage());
             responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
-		log.info("------------- 로그인 -------------");
+		logger.info("------------- 로그인 -------------");
 		return responseEntity;
 	}
 

@@ -1,7 +1,10 @@
 package com.hw.common;
 
 import java.security.Key;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -63,6 +68,7 @@ public class TokenProvide implements InitializingBean {
      * @return 발급받은 토큰을 리턴해줌
      */
 	 public String createAcessToken(String loginId, String role) {
+		 logger.info(role);
 		 Claims claims = Jwts.claims().setSubject(loginId);
 		 claims.put("role", role);
 		 
@@ -106,8 +112,8 @@ public class TokenProvide implements InitializingBean {
      * @return Authentication 객체
      */
 	 public Authentication getAuthentication(String token) {
-		 UserDetails userDetails = userDetailsService.loadUserByUsername(token);
-		 return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getAuthorities());
+		 UserDetails userDetails = userDetailsService.loadUserByUsername(getUserLoginId(token));
+		 return new UsernamePasswordAuthenticationToken(userDetails, "", getUserAuth(token));
 	 }
 	 
 	 /**
@@ -123,7 +129,24 @@ public class TokenProvide implements InitializingBean {
 				 .getBody()
 				 .getSubject();
 	 }
-
+	 
+	 /**
+     * 토큰 이용하여 사용자 권한 
+     * @param 발급받은 Token
+     * @return String
+     */
+	 public Collection<? extends GrantedAuthority> getUserAuth (String token) {
+		 
+		 Collection<? extends GrantedAuthority> authorities =
+            Arrays.stream(
+        		parseClaims(token)
+        		.get("role").toString().split(","))
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+		 
+		return authorities;
+	 }
+	 
 	 /**
      * Request Header Token 가져오기   
      * @param Token
@@ -175,7 +198,12 @@ public class TokenProvide implements InitializingBean {
      */
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            return Jwts
+            		.parserBuilder()
+            		.setSigningKey(key)
+            		.build()
+            		.parseClaimsJws(accessToken)
+            		.getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

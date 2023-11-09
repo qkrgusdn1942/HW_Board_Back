@@ -1,8 +1,11 @@
 package com.hw.user;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.hw.dto.UserDto;
 
@@ -25,7 +28,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Table(name = "user")
 @Builder
-public class UserEntity {
+public class UserEntity implements UserDetails{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,9 +40,7 @@ public class UserEntity {
 	@Column(name = "login_id")
 	private String loginId;
 	
-	@Column(name = "user_name")
-	private String userName;
-	
+	private String name;
 	private String role;
 	
 	@UpdateTimestamp
@@ -54,11 +55,47 @@ public class UserEntity {
 				.userId(userDto.getUserId())
 				.loginId(userDto.getLoginId())
 				.password(userDto.getPassword())
-				.userName(userDto.getUserName())
+				.name(userDto.getName())
 				.role(userDto.getRole())
 				.insertDate(userDto.getInsertDate())
 				.updateDate(userDto.getUpdateDate())
 				.build();
+	}
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }
