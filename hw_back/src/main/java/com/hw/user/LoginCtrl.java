@@ -19,6 +19,9 @@ import com.hw.common.ResponseService;
 import com.hw.common.TokenDto;
 import com.hw.dto.UserDto;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping(value="/user/*")
 public class LoginCtrl {
@@ -40,9 +43,6 @@ public class LoginCtrl {
 		ResponseEntity<?> responseEntity = null;
 		
 		try {
-			
-			logger.info("------------- 회원가입 -------------");
-			
 			// 회원가입 
 			userService.join(userDto);
 
@@ -50,7 +50,6 @@ public class LoginCtrl {
 			BaseResponse response = responseService.getBaseResponse(false, e.getMessage());
             responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
 		}
-		logger.info("------------- 회원가입 -------------");
 		return responseEntity;
 	}
 
@@ -60,39 +59,40 @@ public class LoginCtrl {
      * @return response
      */
 	@PostMapping(value = "/login")
-	public ResponseEntity<?> login (@RequestBody UserDto userDto) {
+	public ResponseEntity<?> login (@RequestBody UserDto userDto, HttpServletResponse response) {
 		ResponseEntity<?> responseEntity = null;
 		
 		try {
-			
-			logger.info("------------- 로그인 -------------");
 			
 			String loginId =  userService.login(userDto);
 			
 			// 토큰 생성 
 			TokenDto tokenDto = userService.generateToken(loginId);
 			
-			// 쿠키 
-			ResponseCookie responseCookie = 
-					ResponseCookie
-						.from(HttpHeaders.SET_COOKIE, tokenDto.getRefreshToken())
-						.path("/")
-						.maxAge(14 * 24 * 60 * 60)
-						.build();
+			// 액세스 토큰 쿠키
+			Cookie accessCookie = new Cookie("AccessToken", tokenDto.getAccessToken());
+			accessCookie.setMaxAge(14 * 24 * 60 * 60);
+			accessCookie.setPath("/");
+			response.addCookie(accessCookie);
+			
+			// 액세스 토큰 쿠키
+			Cookie refreshCookie = new Cookie("RefreshToken", tokenDto.getRefreshToken());
+			refreshCookie.setMaxAge(15 * 24 * 60 * 60);
+			refreshCookie.setPath("/");
+			response.addCookie(refreshCookie);
 			
 			// 응답 객체 
-			DataResponse<String> response = responseService.getSingleDataResponse(true, loginId, tokenDto.getAccessToken());
+			DataResponse<String> responseData = responseService.getSingleDataResponse(true, loginId, tokenDto.getAccessToken());
 			
 			responseEntity = 
 					ResponseEntity
 						.status(HttpStatus.OK)
-						.header(HttpHeaders.SET_COOKIE, responseCookie.toString())
-						.body(response);
+						.body(responseData);
 						
 		}catch (Exception e) {
 			logger.info("! 오류  :: " + e.getMessage());
-			BaseResponse response = responseService.getBaseResponse(false, e.getMessage());
-            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+			BaseResponse badResponse = responseService.getBaseResponse(false, e.getMessage());
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(badResponse);
 		}
 		logger.info("------------- 로그인 -------------");
 		return responseEntity;

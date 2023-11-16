@@ -54,26 +54,23 @@ public class JwtFilter extends GenericFilterBean {
         Cookie[] cookies = httpServletRequest.getCookies();
         String refreshToken = null;
         String useToken = null;
+        String accessToken = null;
         
         for (Cookie cookie : cookies) {
-        	if (cookie.getName().equals(HttpHeaders.SET_COOKIE)) {
+        	if (cookie.getName().equals("AccessToken")) {
+        		logger.info("AT :: " + cookie.getValue());
+        		accessToken = cookie.getValue();
+        	}
+        	if (cookie.getName().equals("RefreshToken")) {
+        		logger.info("RT :: " + cookie.getValue());
         		refreshToken = cookie.getValue();
         	}
         }
-        
-        if (requestURI.equals("/token/getAccessToken")) {
+
+        if (accessToken != null) {
+        	useToken = tokenProvide.resolveToken(accessToken);
+        } else if (refreshToken != null) {
         	useToken = tokenProvide.resolveToken(refreshToken);
-        	try {
-        		if (StringUtils.hasText(useToken) && tokenProvide.validateToken(useToken)) {
-        			Authentication authentication = tokenProvide.getAuthentication(useToken);
-        			SecurityContextHolder.getContext().setAuthentication(authentication);
-        			return;
-        		}
-        	} catch (Exception e) {
-        		logger.error(e.getMessage(), e);
-        	}
-        } else {
-        	useToken = tokenProvide.resolveToken(httpServletRequest.getHeader("Authorization"));
         }
         
         try {
@@ -81,9 +78,9 @@ public class JwtFilter extends GenericFilterBean {
         	if (StringUtils.hasText(useToken) && tokenProvide.validateToken(useToken)) {
         		Authentication authentication = tokenProvide.getAuthentication(useToken);
         		SecurityContextHolder.getContext().setAuthentication(authentication);
-        		logger.debug("Security Contextx에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+        		logger.info("Security Contextx에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
         	} else {
-        		logger.debug("JWT 유효한 토큰 없음 , uri:{}", requestURI);
+        		logger.info("JWT 유효한 토큰 없음 , uri:{}", requestURI);
         	}
         	chain.doFilter(request, response);
         	// 잘못된 서명인 토큰일 경우

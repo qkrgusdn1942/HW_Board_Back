@@ -51,8 +51,8 @@ public class TokenProvide implements InitializingBean {
         @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenValidityInSeconds
 	) {
 		this.secret = secret;
-		this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 1000;
-        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
+		this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds;
+        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds;
 	}
 	
 	@Override
@@ -68,7 +68,6 @@ public class TokenProvide implements InitializingBean {
      * @return 발급받은 토큰을 리턴해줌
      */
 	 public String createAcessToken(String loginId, String role) {
-		 logger.info(role);
 		 Claims claims = Jwts.claims().setSubject(loginId);
 		 claims.put("role", role);
 		 
@@ -95,7 +94,7 @@ public class TokenProvide implements InitializingBean {
 		 claims.put("role", role);
 		 
 		 Date now = new Date();
-		 Date validity = new Date(now.getTime() + this.accessTokenValidityInMilliseconds);
+		 Date validity = new Date(now.getTime() + this.refreshTokenValidityInMilliseconds);
 		 
 		 return Jwts.builder()
 				 .setSubject(loginId)
