@@ -20,6 +20,7 @@ import com.hw.common.TokenDto;
 import com.hw.dto.UserDto;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -95,6 +96,46 @@ public class LoginCtrl {
             responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(badResponse);
 		}
 		logger.info("------------- 로그인 -------------");
+		return responseEntity;
+	}
+	
+	/**
+     * 로그아웃
+     * @param userEntity
+     * @return response
+     */
+	@PostMapping(value = "/logout")
+	public ResponseEntity<?> logout (HttpServletResponse response) {
+		ResponseEntity<?> responseEntity = null;
+		
+		try {
+			
+			logger.info("로그아웃");
+			
+			Cookie accessCookie = new Cookie("AccessToken", null);
+			accessCookie.setMaxAge(0);
+			accessCookie.setPath("/");
+			response.addCookie(accessCookie);
+				
+			// 액세스 토큰 쿠키
+			Cookie refreshCookie = new Cookie("RefreshToken", null);
+			refreshCookie.setMaxAge(0);
+			refreshCookie.setPath("/");
+			response.addCookie(refreshCookie);
+			
+			// 응답 객체 
+			BaseResponse baseData = responseService.getBaseResponse(true, "Logout");
+			
+			responseEntity = 
+					ResponseEntity
+						.status(HttpStatus.OK)
+						.body(baseData);
+						
+		}catch (Exception e) {
+			logger.info("! 오류  :: " + e.getMessage());
+			BaseResponse badResponse = responseService.getBaseResponse(false, e.getMessage());
+            responseEntity = ResponseEntity.status(HttpStatus.BAD_REQUEST).body(badResponse);
+		}
 		return responseEntity;
 	}
 

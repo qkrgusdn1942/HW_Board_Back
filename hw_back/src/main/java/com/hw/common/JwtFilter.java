@@ -46,7 +46,7 @@ public class JwtFilter extends GenericFilterBean {
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
         String requestURI = httpServletRequest.getRequestURI();
         
-        if(requestURI.equals("/main") || requestURI.equals("/user/login") || requestURI.equals("/user/join")) {
+        if(requestURI.equals("/main") || requestURI.equals("/user/login") || requestURI.equals("/user/join") || requestURI.equals("/user/logout")) {
         	chain.doFilter(request, response);
             return;
         }
