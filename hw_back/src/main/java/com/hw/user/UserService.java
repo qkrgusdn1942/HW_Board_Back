@@ -75,4 +75,17 @@ public class UserService {
 		
 		return tokenDto;
 	}
+	
+	/**
+     * 로그인 ID -> UserId
+     * @param loginId
+     * @return tokenDto
+	 * @throws Exception 
+     */
+	public Long getUserIdByLoginId(String loginId) {
+		UserEntity userEntity = userRepository.findByLoginId(loginId).orElseThrow(() -> new LoginFailException("회원 정보가 없습니다."));
+		
+		return userEntity.getUserId();
+	}
+	
 }

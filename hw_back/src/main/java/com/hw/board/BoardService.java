@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.hw.common.NullProperty;
+import com.hw.dto.BoardDto;
 
 import jakarta.transaction.Transactional;
 
@@ -25,8 +26,8 @@ public class BoardService {
 		return boardRepository.findAll(sort);
 	}
 	
-	public BoardEntity saveBoard (BoardEntity boardEntity) {
-		return boardRepository.save(boardEntity);
+	public BoardEntity saveBoard (BoardDto boardDto) {
+		return boardRepository.save(boardDto.todEntity());
 	}
 	
 	@Transactional

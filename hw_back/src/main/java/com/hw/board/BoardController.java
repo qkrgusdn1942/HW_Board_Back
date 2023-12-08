@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hw.dto.BoardDto;
+
 @RestController
 @RequestMapping(value = "/board/*")
 public class BoardController {
@@ -30,8 +32,8 @@ public class BoardController {
 	}
 	
 	@PostMapping(value = "/saveBoard")
-	public void saveBoard (@RequestBody BoardEntity boardEntity) {
-		boardService.saveBoard(boardEntity);
+	public void saveBoard (@RequestBody BoardDto boardDto) {
+		boardService.saveBoard(boardDto);
 	}
 	
 	@PutMapping(value = "/modifyBoardByBoardId")
